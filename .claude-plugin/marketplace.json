@@ -1,0 +1,18 @@
+{
+  "name": "skill-detector-control-negativo",
+  "description": "Cuenta cuántos bancos de pruebas de un repositorio comprueban solo que lo bueno pasa, y se puntúa contra un conjunto etiquetado a mano antes de opinar del repositorio.",
+  "owner": {
+    "name": "Juan Luis León Rodríguez"
+  },
+  "plugins": [
+    {
+      "name": "detector-control-negativo",
+      "source": "./",
+      "strict": false,
+      "description": "Cuenta cuántos bancos de pruebas de un repositorio comprueban solo que lo bueno pasa, y por eso darían verde igual con el código roto. Determinista, anclado a un fichero de etiquetas escrito a mano, y su código de salida habla de la precisión del detector y no del estado del repositorio.",
+      "skills": [
+        "./skills/detector-control-negativo"
+      ]
+    }
+  ]
+}
