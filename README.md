@@ -73,7 +73,7 @@ material que el detector MIDE, así que varias invocan símbolos que no existen 
 caerían si alguien las ejecutara como pruebas. Se llaman `test_*.py` porque el criterio del detector
 es el nombre del fichero, y renombrarlas las sacaría de su propia medición. La exclusión vive en
 `conftest.py`, con el motivo escrito dentro, y hoy `python -m pytest -q` sobre este repositorio
-recoge 30 pruebas, las 30 del banco de la skill, y sale verde sin tocar una sola fixture.
+recoge 32 pruebas, las 32 del banco de la skill, y sale verde sin tocar una sola fixture.
 
 Este repositorio es solo el paquete instalable. La medición sobre un árbol real, con las cifras,
 el método y las cuatro mutaciones que se le pasaron al propio detector, vive aparte:
@@ -255,7 +255,8 @@ ni un test**: borrar el literal `_CN_` del reconocimiento de la marca y borrar l
 y `_sin_` de la señal de nombre salían limpias, porque cada una dependía en exclusiva de un único
 banco que no estaba etiquetado. Un banco de 24 casos, verde, y dos líneas del criterio que
 cualquiera podía borrar sin que nadie se enterase. Se cerró con dos casos que aíslan cada forma, y
-el banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado, y cubren lo
+el banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
+últimos, hasta los 32 de hoy, entraron al vigilar el censo de fixtures y el mutador. Cubren lo
 que antes no existía o estaba clavado dentro del script: que los bancos plantados a propósito se
 cacen, que ningún banco del repositorio se quede sin etiqueta, que la raíz de git no se invente
 cuando no hay ninguna, y que la exclusión declarada saque las rutas y las cuente aparte.
