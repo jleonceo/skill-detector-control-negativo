@@ -6,7 +6,7 @@ y por qué, y se puntúa a sí misma contra un conjunto etiquetado a mano antes 
 
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
 ![sin dependencias](https://img.shields.io/badge/dependencias-ninguna-brightgreen)
-![30 casos](https://img.shields.io/badge/banco-30%20casos-brightgreen)
+![32 casos](https://img.shields.io/badge/banco-32%20casos-brightgreen)
 ![mutación 6/6](https://img.shields.io/badge/mutaci%C3%B3n-6%2F6-brightgreen)
 ![licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)
 
@@ -237,7 +237,7 @@ ni configuración fuera de su carpeta.
 
 ### Por qué fiarse
 
-**30 casos, y siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
+**32 casos, y siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
 cazar bancos sin control negativo, no tenerlos sería la ironía más cara del paquete.
 
 ```bash
@@ -355,7 +355,7 @@ material the detector MEASURES, so several of them call symbols that do not exis
 would fail if anybody ran them as tests. They are named `test_*.py` because the detector's criterion
 is the filename, and renaming them would drop them out of their own measurement. The exclusion lives
 in `conftest.py` with the reason written inside, and today `python -m pytest -q` over this
-repository collects 30 tests, all 30 from the skill's own bench, and comes out green without
+repository collects 32 tests, all 32 from the skill's own bench, and comes out green without
 touching a single fixture.
 
 The third way exists because the instrument does not need Claude Code. It is a standard library
@@ -469,7 +469,7 @@ configuration outside its own folder.
 
 ### Why trust it
 
-**30 cases, seven of them negative controls marked `CN`.** In a bench whose whole purpose is
+**32 cases, seven of them negative controls marked `CN`.** In a bench whose whole purpose is
 catching benches without negative controls, having none would be the most expensive irony in the
 package.
 
