@@ -6,7 +6,7 @@ y por qué, y se puntúa a sí misma contra un conjunto etiquetado a mano antes 
 
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
 ![sin dependencias](https://img.shields.io/badge/dependencias-ninguna-brightgreen)
-![32 casos](https://img.shields.io/badge/banco-32%20casos-brightgreen)
+![38 casos](https://img.shields.io/badge/banco-38%20casos-brightgreen)
 ![mutación 6/6](https://img.shields.io/badge/mutaci%C3%B3n-6%2F6-brightgreen)
 ![licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)
 
@@ -73,7 +73,7 @@ material que el detector MIDE, así que varias invocan símbolos que no existen 
 caerían si alguien las ejecutara como pruebas. Se llaman `test_*.py` porque el criterio del detector
 es el nombre del fichero, y renombrarlas las sacaría de su propia medición. La exclusión vive en
 `conftest.py`, con el motivo escrito dentro, y hoy `python -m pytest -q` sobre este repositorio
-recoge 32 pruebas, las 32 del banco de la skill, y sale verde sin tocar una sola fixture.
+recoge 38 pruebas, las 38 del banco de la skill, y sale verde sin tocar una sola fixture.
 
 Este repositorio es solo el paquete instalable. La medición sobre un árbol real, con las cifras,
 el método y las cuatro mutaciones que se le pasaron al propio detector, vive aparte:
@@ -237,7 +237,7 @@ ni configuración fuera de su carpeta.
 
 ### Por qué fiarse
 
-**32 casos, y siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
+**38 casos, y siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
 cazar bancos sin control negativo, no tenerlos sería la ironía más cara del paquete.
 
 ```bash
@@ -256,10 +256,19 @@ y `_sin_` de la señal de nombre salían limpias, porque cada una dependía en e
 banco que no estaba etiquetado. Un banco de 24 casos, verde, y dos líneas del criterio que
 cualquiera podía borrar sin que nadie se enterase. Se cerró con dos casos que aíslan cada forma, y
 el banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
-últimos, hasta los 32 de hoy, entraron al vigilar el censo de fixtures y el mutador. Cubren lo
+últimos, hasta 32, entraron al vigilar el censo de fixtures y el mutador. Cubren lo
 que antes no existía o estaba clavado dentro del script: que los bancos plantados a propósito se
 cacen, que ningún banco del repositorio se quede sin etiqueta, que la raíz de git no se invente
 cuando no hay ninguna, y que la exclusión declarada saque las rutas y las cuente aparte.
+
+**Los seis últimos, hasta los 38 de hoy, los trajo una auditoría externa el día de publicar**, con
+el banco en 32, la mutación en 6 de 6 y el acuerdo con las etiquetas en 9 de 9. Buscó con material
+que no estaba en el banco y encontró dos defectos que ninguno de esos tres verdes podía ver: la
+señal de nombre casaba por subcadena, así que «protocolo» disparaba por contener «roto», y el lector
+de etiquetas convertía en `false` cualquier valor que no entendiera, incluida su propia plantilla
+sin rellenar. La lección va escrita porque cuesta verla: la mutación solo vigila las líneas que ya
+existen, y el acuerdo se mide contra un árbol de juguete sin un solo nombre adversarial ni una
+etiqueta mal escrita. Un arnés hereda el punto ciego del corpus que lo alimenta.
 
 Y el mutador **falla cerrado**: si el ancla de un sabotaje ya no aparece en el fichero, esa
 mutación no se aplica, y en vez de contarla como cazada sale con ERROR y tumba la ejecución. Un
@@ -278,8 +287,9 @@ Ese «sin red» es de la skill, y hay que apurarlo porque el repositorio no cump
 consulta `api.github.com` para comparar este paquete con su gemelo. No se instala con la skill y no
 participa en ninguna medición.
 
-Ese 3.9 está **declarado y todavía no certificado**. En local solo se ha ejecutado con Python 3.13
-sobre Windows. Un repaso del código no encontró sintaxis ni biblioteca por encima de 3.9, pero eso
+Ese 3.9 está **declarado y todavía no certificado**. En local se ha ejecutado con Python 3.10, 3.13
+y 3.14, las tres sobre Windows, y en ninguna versión por debajo de 3.10, que es la que importaba.
+Un repaso del código no encontró sintaxis ni biblioteca por encima de 3.9, pero eso
 encuentra incompatibilidades y no certifica compatibilidad. Lo que la certifica es la matriz de CI
 (3.9, 3.11 y 3.13 sobre Windows, Linux y macOS) dando verde, y hasta el primer push no lo ha dado.
 Cuando lo dé, esta nota se corrige y no se borra.
@@ -356,7 +366,7 @@ material the detector MEASURES, so several of them call symbols that do not exis
 would fail if anybody ran them as tests. They are named `test_*.py` because the detector's criterion
 is the filename, and renaming them would drop them out of their own measurement. The exclusion lives
 in `conftest.py` with the reason written inside, and today `python -m pytest -q` over this
-repository collects 32 tests, all 32 from the skill's own bench, and comes out green without
+repository collects 38 tests, all 38 from the skill's own bench, and comes out green without
 touching a single fixture.
 
 The third way exists because the instrument does not need Claude Code. It is a standard library
@@ -470,7 +480,7 @@ configuration outside its own folder.
 
 ### Why trust it
 
-**32 cases, seven of them negative controls marked `CN`.** In a bench whose whole purpose is
+**38 cases, seven of them negative controls marked `CN`.** In a bench whose whole purpose is
 catching benches without negative controls, having none would be the most expensive irony in the
 package.
 
@@ -493,7 +503,17 @@ nobody noticing. It was closed with two cases isolating each shape, taking the b
 The four more up to 30 were added by this packaging, and they cover what did not exist before or sat
 nailed inside the script: that the deliberately planted benches get caught, that no bench of the
 repository goes unlabelled, that the git root is not invented where there is none, and that the
-declared exclusion drops the paths and counts them separately.
+declared exclusion drops the paths and counts them separately. Two more, up to 32, came in while
+watching the fixture census and the mutator.
+
+**The last six, up to today's 38, were brought in by an outside audit on publication day**, with the
+bench at 32, mutation at 6 of 6 and label agreement at 9 of 9. It looked with material that was not
+in the bench and found two defects none of those three greens could see: the name signal matched on
+substrings, so the Spanish «protocolo» fired by containing «roto» (broken), and the label reader
+turned any value it did not understand into `false`, its own unfilled template included. The lesson
+is written down because it is hard to see: mutation only guards lines that already exist, and
+agreement is measured against a toy tree without a single adversarial name or a single malformed
+label. A harness inherits the blind spot of the corpus that feeds it.
 
 And the mutator **fails closed**: if a sabotage's anchor no longer appears in the file, that
 mutation is not applied, and instead of counting it as caught the run exits with ERROR. A harness
@@ -512,8 +532,9 @@ ask of local `git`. The one that does go out is `guardian_gemelo.py`, at the rep
 queries `api.github.com` to compare this package against its twin. It is not installed with the
 skill and it takes part in no measurement.
 
-That 3.9 is **declared and not yet certified**. Locally it has only been run with Python 3.13 on
-Windows. A read-through found no syntax or library above 3.9, but that finds incompatibilities and
+That 3.9 is **declared and not yet certified**. Locally it has been run with Python 3.10, 3.13 and
+3.14, all three on Windows, and on nothing below 3.10, which is the version that mattered.
+A read-through found no syntax or library above 3.9, but that finds incompatibilities and
 does not certify compatibility. What certifies it is the CI matrix (3.9, 3.11 and 3.13 across
 Windows, Linux and macOS) going green, and until the first push it has not. When it does, this note
 gets corrected and not deleted.
