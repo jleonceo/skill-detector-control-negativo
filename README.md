@@ -207,14 +207,14 @@ producido por no haber mirado nada.
 
 ### Qué no hace
 
-- **No escribe.** Ni en tus bancos, ni en tu configuración, ni fuera de la carpeta desde la que se
+- No escribe. Ni en tus bancos, ni en tu configuración, ni fuera de la carpeta desde la que se
   ejecuta. No propone parches ni arregla nada.
-- **No dice si un banco es bueno.** Tener una aserción negativa no prueba que discrimine: un banco
+- No dice si un banco es bueno. Tener una aserción negativa no prueba que discrimine: un banco
   puede llevar `assertFalse` y seguir pasando con el código roto. Eso lo dice mutar el código, y
   el paquete trae `mutar.py` para hacérselo a sí mismo.
-- **No cuenta lo que git no publica.** El universo sale de `git ls-files`, así que un banco del
+- No cuenta lo que git no publica. El universo sale de `git ls-files`, así que un banco del
   árbol de trabajo que nadie ha añadido queda fuera. Es un suelo declarado.
-- **No entra por un nombre que no parezca un banco.** El criterio es `test_*.py`,
+- No entra por un nombre que no parezca un banco. El criterio es `test_*.py`,
   `run_tests*.py` o `*_test.py`. Otro esquema de nombres necesita otro criterio.
 
 ### Desinstalar
@@ -450,14 +450,14 @@ message available, produced by having looked at nothing.
 
 ### What it does not do
 
-- **It does not write.** Not to your benches, not to your configuration, not outside the folder it
+- It does not write. Not to your benches, not to your configuration, not outside the folder it
   runs from. It proposes no patches and fixes nothing.
-- **It does not say whether a bench is good.** Having a negative assertion does not prove it
+- It does not say whether a bench is good. Having a negative assertion does not prove it
   discriminates: a bench can carry `assertFalse` and still pass with broken code. Mutation says
   that, and the package ships `mutar.py` to do it to itself.
-- **It does not count what git does not publish.** The universe comes from `git ls-files`, so a
+- It does not count what git does not publish. The universe comes from `git ls-files`, so a
   bench in the working tree that nobody added stays out. A declared floor.
-- **It does not take in a name that does not look like a bench.** The criterion is `test_*.py`,
+- It does not take in a name that does not look like a bench. The criterion is `test_*.py`,
   `run_tests*.py` or `*_test.py`. Another naming scheme needs another criterion.
 
 ### Uninstall
