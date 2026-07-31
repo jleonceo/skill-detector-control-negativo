@@ -1,14 +1,26 @@
 # skill-detector-control-negativo
 
 **Tu suite de pruebas está verde. La pregunta que nadie hace es si esa suite sabría ponerse roja.
-Esta skill cuenta cuántos bancos de tu repositorio comprueban solo que lo bueno pasa, dice cuáles
+Esta skill cuenta cuántas suites de tu repositorio comprueban solo que lo bueno pasa, dice cuáles
 y por qué. Y se puntúa a sí misma contra un conjunto etiquetado a mano antes de opinar de nada.**
+
+Aquí, **suite** es cada uno de esos ficheros, y **brazo negativo** es el caso que uno de
+ellos mete a propósito para que falle. Sin brazo negativo, una suite da verde con el
+código bueno y con el roto, así que su verde no informa de nada. El programa, en sus salidas y en
+la clave del YAML, los llama `banco`.
+
+Y una **skill** es una extensión de Claude Code, el agente de terminal de Anthropic: le enseña a
+usar esta herramienta sin que tengas que recordar el comando. Si no usas Claude Code, la vía de
+instalación manual de más abajo te vale igual.
 
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
 ![sin dependencias](https://img.shields.io/badge/dependencias-ninguna-brightgreen)
 ![38 casos](https://img.shields.io/badge/banco-38%20casos-brightgreen)
 ![mutación 6/6](https://img.shields.io/badge/mutaci%C3%B3n-6%2F6-brightgreen)
 ![licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)
+[![ci](https://github.com/jleonceo/skill-detector-control-negativo/actions/workflows/ci.yml/badge.svg)](https://github.com/jleonceo/skill-detector-control-negativo/actions/workflows/ci.yml)
+
+[Español](#español) · [English](#english)
 
 ```
 /plugin marketplace add jleonceo/skill-detector-control-negativo
@@ -57,14 +69,14 @@ BANCOS SIN CONTROL NEGATIVO
 
 Fíjate en las dos últimas líneas antes de fijarte en el recuento: **el código de salida habla del
 detector y no del repositorio.** Sale con `0` cuando concuerda con las etiquetas. El número de
-bancos se reporta sin tumbar nada. Esa advertencia la imprime el propio programa, en cada ejecución,
+suites se reporta sin tumbar nada. Esa advertencia la imprime el propio programa, en cada ejecución,
 para que no dependa de que alguien se acuerde de escribirla. El porqué está más abajo y es la
 decisión que da forma al resto.
 
-**Y el «2 de 8» no describe un repositorio de verdad: los ocho bancos de `ejemplo/bancos/` están
+**Y el «2 de 8» no describe un repositorio de verdad: los ocho suites de `ejemplo/bancos/` están
 plantados a propósito, uno a uno, con su etiqueta al lado.** Dos sin brazo negativo, que son los
 dos que el informe señala; cinco con brazo negativo, uno por cada señal; y un agregador, para el
-tercer valor de la etiqueta. El noveno banco del universo es el de la propia skill. Es un árbol de
+tercer valor de la etiqueta. El noveno suite del universo es el de la propia skill. Es un árbol de
 juguete, construido para que cada veredicto se pueda comprobar leyendo el fichero. Sobre tu
 repositorio el reparto será otro.
 
@@ -73,13 +85,11 @@ material que el detector MIDE, así que varias invocan símbolos que no existen 
 caerían si alguien las ejecutara como pruebas. Se llaman `test_*.py` porque el criterio del detector
 es el nombre del fichero, y renombrarlas las sacaría de su propia medición. La exclusión vive en
 `conftest.py`, con el motivo escrito dentro. Hoy `python -m pytest -q` sobre este repositorio
-recoge las 38 pruebas del banco de la skill y sale verde sin tocar una sola fixture.
+recoge las 38 pruebas del suite de la skill y sale verde sin tocar una sola fixture.
 
 Este repositorio es solo el paquete instalable. La medición sobre un árbol real, con las cifras,
 el método y las cuatro mutaciones que se le pasaron al propio detector, vive aparte:
 [jleonceo/detector-control-negativo](https://github.com/jleonceo/detector-control-negativo).
-
-[Español](#español) · [English](#english)
 
 ---
 
@@ -87,16 +97,16 @@ el método y las cuatro mutaciones que se le pasaron al propio detector, vive ap
 
 ### Qué hace
 
-Cuenta bancos y dice por qué cada uno.
+Cuenta suites y dice por qué cada uno.
 
-A un banco que solo comprueba el camino bueno se le pasa una entrada correcta, se comprueba que
-sale el resultado correcto y ahí acaba. Ese banco da verde y sigue dando verde cuando alguien
+A una suite que solo comprueba el camino bueno se le pasa una entrada correcta, se comprueba que
+sale el resultado correcto y ahí acaba. Esa suite da verde y sigue dando verde cuando alguien
 rompe la validación de entrada, porque nunca se le pregunta qué hace con una entrada mala. Le
 falta el **control negativo**: el caso que afirma lo que la herramienta debe rechazar, bloquear,
 dejar vacío o marcar como inválido.
 
 La skill recorre los ficheros de test que git publica en tu repositorio, busca cinco formas de
-brazo negativo y devuelve cuántos bancos no tienen ninguna.
+brazo negativo y devuelve cuántas suites no tienen ninguna.
 
 Eso es todo. Sin modelo de lenguaje de por medio, sin red, sin dependencias y sin escribir en
 ningún sitio.
@@ -139,9 +149,9 @@ python ~/.claude/skills/detector-control-negativo/verificar_control_negativo.py 
 
 **La primera ejecución en un repositorio nuevo sale con `2`, y está bien que lo haga.** Todavía no
 hay etiquetas. Sin ellas el recuento es una aproximación sin puntuar. El camino es
-`--etiquetar`, que imprime la plantilla YAML de los bancos que aún no tienen etiqueta, abrir a
+`--etiquetar`, que imprime la plantilla YAML de las suites que aún no tienen etiqueta, abrir a
 mano los ficheros que salgan y escribir la etiqueta con la línea que la demuestra. Ese rato es el
-trabajo y no hay atajo: medir un banco obliga a leerlo.
+trabajo y no hay atajo: medir una suite obliga a leerlo.
 
 Estas son las cinco opciones, que son todas:
 
@@ -150,15 +160,15 @@ Estas son las cinco opciones, que son todas:
 | `--raiz RUTA` | el árbol a medir; por defecto, la raíz git del directorio actual |
 | `--etiquetas FICHERO` | la verdad de referencia con la que se puntúa el detector |
 | `--excluir SUBCADENA` | deja fuera las rutas que la contengan; repetible y se cuentan aparte |
-| `--listar` | cada banco con su veredicto y cada veredicto con la señal que lo disparó |
-| `--etiquetar` | plantilla YAML de los bancos que aún no tienen etiqueta |
+| `--listar` | cada suite con su veredicto y cada veredicto con la señal que lo disparó |
+| `--etiquetar` | plantilla YAML de las suites que aún no tienen etiqueta |
 
 La primera vez, `--listar`.
 
 Esa vista es la que evita el malentendido más caro. La skill reconoce el brazo negativo por
-formas, y las de tu proyecto no tienen por qué parecerse a las de nadie: si tu banco envuelve la
+formas, y las de tu proyecto no tienen por qué parecerse a las de nadie: si tu suite envuelve la
 aserción en un helper propio con otro nombre, o marca sus casos negativos con una convención
-distinta, `--listar` lo enseña de un vistazo. Cada banco cubierto sale con la señal que lo
+distinta, `--listar` lo enseña de un vistazo. Cada suite cubierta sale con la señal que lo
 disparó, así que se ve si el criterio está reconociendo lo que tú entiendes por brazo negativo o
 está contando otra cosa.
 
@@ -182,7 +192,7 @@ instrumento y la medición deja de valer. Si el detector discrepa de una etiquet
 arregla es el criterio.
 
 `tiene_control_negativo` tiene un tercer valor, `agregador`, que no es un adorno: hay ficheros que
-se llaman como un banco y no tienen un solo caso propio, porque descubren otros y los lanzan.
+se llaman como una suite y no tienen un solo caso propio, porque descubren otros y los lanzan.
 Contarlos entre los carentes es contar el objeto equivocado.
 
 ### Los códigos de salida
@@ -192,29 +202,29 @@ Contarlos entre los carentes es contar el objeto equivocado.
 | `0` | el detector concuerda con todas las etiquetas |
 | `1` | discrepa de alguna: hay un falso positivo o un falso negativo |
 | `2` | no hay etiquetas con las que medirse, así que no se puntúa |
-| `3` | no hay universo: ninguna raíz de git, o cero bancos encontrados |
+| `3` | no hay universo: ninguna raíz de git, o cero suites encontradas |
 
 **Ninguno habla del estado de tu repositorio. Es deliberado.** El primer intento de medir esto
-dio 112 bancos carentes, luego 77, luego 48, luego 31, y una revisión a mano de tres casos dejó la
+dio 112 suites carentes, luego 77, luego 48, luego 31, y una revisión a mano de tres casos dejó la
 cifra de verdad en unos diez. Ninguna versión estaba mal programada: cada afinado medía un objeto
 distinto. Actuar sobre una cifra que solo baja conforme se mira mejor es el error que esta
 herramienta existe para no repetir, así que el recuento se reporta y quien quiera un umbral que
 bloquee lo pone él, sabiendo lo que hace.
 
-El `3` es igual de deliberado. Fuera de un repositorio de git no hay universo, y decir «0 bancos
+El `3` es igual de deliberado. Fuera de un repositorio de git no hay universo, y decir «0 suites
 sin control negativo» ahí sería el falso verde de manual: el mensaje más tranquilizador posible
 producido por no haber mirado nada.
 
 ### Qué no hace
 
-- No escribe. Ni en tus bancos, ni en tu configuración, ni fuera de la carpeta desde la que se
+- No escribe. Ni en tus suites, ni en tu configuración, ni fuera de la carpeta desde la que se
   ejecuta. No propone parches ni arregla nada.
-- No dice si un banco es bueno. Tener una aserción negativa no prueba que discrimine: un banco
+- No dice si una suite es bueno. Tener una aserción negativa no prueba que discrimine: una suite
   puede llevar `assertFalse` y seguir pasando con el código roto. Eso lo dice mutar el código.
   El paquete trae `mutar.py` para hacérselo a sí mismo.
-- No cuenta lo que git no publica. El universo sale de `git ls-files`, así que un banco del
+- No cuenta lo que git no publica. El universo sale de `git ls-files`, así que una suite del
   árbol de trabajo que nadie ha añadido queda fuera. Es un suelo declarado.
-- No entra por un nombre que no parezca un banco. El criterio es `test_*.py`,
+- No entra por un nombre que no parezca una suite. El criterio es `test_*.py`,
   `run_tests*.py` o `*_test.py`. Otro esquema de nombres necesita otro criterio.
 
 ### Desinstalar
@@ -230,15 +240,15 @@ rm -rf ~/.claude/skills/detector-control-negativo
 
 El segundo comando es el que casi nadie documenta. Desinstalar el plugin lo quita de la lista de
 plugins, pero deja el marketplace registrado y su copia local en la caché que mantiene Claude Code
-en `~/.claude/plugins/cache`, que es suya y no de esta skill.
+bajo `~/.claude/plugins/`, que es suya y no de esta skill.
 
 De la skill en sí no queda nada, porque no escribe nada: ni base de datos, ni fichero de estado,
 ni configuración fuera de su carpeta.
 
 ### Por qué fiarse
 
-**38 casos. Siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
-cazar bancos sin control negativo, no tenerlos sería la ironía más cara del paquete.
+**38 casos. Siete de ellos son controles negativos marcados `CN`.** En una suite cuya objeto es
+cazar suites sin control negativo, no tenerlos sería la ironía más cara del paquete.
 
 ```bash
 python skills/detector-control-negativo/test_detector_control_negativo.py
@@ -246,24 +256,24 @@ python skills/detector-control-negativo/mutar.py
 ```
 
 El segundo comando es el que da derecho a presumir del primero. Sabotea el detector a propósito
-con **seis sabotajes** y cuenta cuántos caza el banco. Hoy caza los seis sin un hueco. No hay que
+con **seis sabotajes** y cuenta cuántos caza la suite. Hoy caza los seis sin un hueco. No hay que
 creérselo: se ejecuta y se ve. El fichero medido queda restaurado al terminar y también si el
 proceso muere a mitad, porque la copia intacta vive en disco y no en la memoria del programa.
 
 Eso hizo falta. Antes de publicar se le pasaron cuatro mutaciones al detector y **dos no rompieron
 ni un test**: borrar el literal `_CN_` del reconocimiento de la marca y borrar los nombres `_no_`
 y `_sin_` de la señal de nombre salían limpias, porque cada una dependía en exclusiva de un único
-banco que no estaba etiquetado. Un banco de 24 casos, verde, con dos líneas del criterio que
+suite que no estaba etiquetado. Un batería de 24 casos, verde, con dos líneas del criterio que
 cualquiera podía borrar sin que nadie se enterase. Se cerró con dos casos que aíslan cada forma.
-El banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
+La suite pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
 últimos, hasta 32, entraron al vigilar el censo de fixtures y el mutador. Cubren lo
-que antes no existía o estaba clavado dentro del script: que los bancos plantados a propósito se
-cacen, que ningún banco del repositorio se quede sin etiqueta, que la raíz de git no se invente
+que antes no existía o estaba clavado dentro del script: que las suites plantadas a propósito se
+cacen, que ninguna suite del repositorio se quede sin etiqueta, que la raíz de git no se invente
 cuando no hay ninguna y que la exclusión declarada saque las rutas y las cuente aparte.
 
 **Los seis últimos, hasta los 38 de hoy, los trajo una auditoría externa el día de publicar**, con
-el banco en 32, la mutación en 6 de 6 y el acuerdo con las etiquetas en 9 de 9. Buscó con material
-que no estaba en el banco y encontró dos defectos que ninguno de esos tres verdes podía ver: la
+la suite en 32, la mutación en 6 de 6 y el acuerdo con las etiquetas en 9 de 9. Buscó con material
+que no estaba en la suite y encontró dos defectos que ninguno de esos tres verdes podía ver: la
 señal de nombre casaba por subcadena, así que «protocolo» disparaba por contener «roto», y el lector
 de etiquetas convertía en `false` cualquier valor que no entendiera, incluida su propia plantilla
 sin rellenar. La lección va escrita porque cuesta verla: la mutación solo vigila las líneas que ya
@@ -276,8 +286,11 @@ arnés que aprueba sin haber mordido no avala nada.
 
 ### Requisitos
 
-Python 3.9 o superior, biblioteca estándar, sin red y sin nada que instalar. Hace falta `git` en
-el PATH, porque el universo de bancos se le pregunta a él. En macOS y en casi todo Linux el
+Python 3.9 o superior, biblioteca estándar, sin red y sin nada que instalar. Ese «nada que
+instalar» cubre el instrumento y su batería de 38 casos, que se ejecutan con `python` a secas. El
+único comando de esta página que pide algo de fuera es el `pytest` con el que se comprueba un clon
+recién hecho, y el propio CI lo instala aparte. Hace falta `git` en
+el PATH, porque el universo de suites se le pregunta a él. En macOS y en casi todo Linux el
 intérprete se llama `python3`, no `python`: los comandos de esta página van con `python` porque se
 escribieron en Windows.
 
@@ -287,12 +300,15 @@ Ese «sin red» es de la skill. Hay que apurarlo porque el repositorio no cumple
 consulta `api.github.com` para comparar este paquete con su gemelo. No se instala con la skill y no
 participa en ninguna medición.
 
-Ese 3.9 está **declarado y todavía no certificado**. En local se ha ejecutado con Python 3.10, 3.13
-y 3.14, las tres sobre Windows, pero en ninguna versión por debajo de 3.10, que es la que importaba.
-Un repaso del código no encontró sintaxis ni biblioteca por encima de 3.9, pero eso
-encuentra incompatibilidades y no certifica compatibilidad. Lo que la certifica es la matriz de CI
-(3.9, 3.11 y 3.13 sobre Windows, Linux y macOS) dando verde, y hasta el primer push no lo ha dado.
-Cuando lo dé, esta nota se corrige y no se borra.
+Ese 3.9 estuvo **declarado y sin certificar** hasta el 31/07/2026. Esta nota se corrige en vez de
+borrarse porque así estaba prometido. En local solo se había ejecutado con Python 3.10, 3.13 y 3.14,
+las tres sobre Windows, o sea en ninguna versión por debajo de 3.10, que era la que importaba. Un
+repaso del código no encontraba sintaxis ni biblioteca por encima de 3.9, pero eso encuentra
+incompatibilidades sin certificar compatibilidad.
+
+Lo que la certifica es la matriz de CI, y el primer push la puso en verde entera: **nueve
+combinaciones, 3.9, 3.11 y 3.13 sobre Windows, Linux y macOS**, más el trabajo que compara este
+paquete con su gemelo. El 3.9 ya está certificado por ejecución.
 
 ### Piezas hermanas
 
@@ -313,20 +329,25 @@ Cuando lo dé, esta nota se corrige y no se borra.
 > **Read this first: the tool speaks Spanish, and this page does not change that.** Every line it
 > prints, the five signal names (`MARCA`, `ASSERT_NEG`, `ESPERA_CERO`, `NOMBRE_NEG`,
 > `ETIQUETA_NEG`), the five flags and the three YAML keys (`banco`, `tiene_control_negativo`,
-> `evidencia`) are Spanish. The label value `agregador` means «aggregator». This page is the
+> `evidencia`) are Spanish. The label value `agregador` means "aggregator". This page is the
 > reference for that vocabulary, and not a localised program.
+>
+> **Two words used throughout.** A *test suite* is what the tool calls `banco`, the Spanish for
+> bench. Its *negative arm* is the case a test suite includes on purpose so that it fails; without
+> one, a test suite stays green over working code and over broken code alike, so its green says
+> nothing.
 
 ### What it does
 
-It counts benches, and says why for each one.
+It counts test suites, and says why for each one.
 
-A bench that only checks the happy path is fed a valid input, asserts the correct result, and
+A test suite that only checks the happy path is fed a valid input, asserts the correct result, and
 stops there. It is green. It stays green after somebody breaks input validation, because it is
 never asked what happens with a bad input. What it lacks is the **negative control**: the case
 asserting what the tool must reject, block, leave empty or flag as invalid.
 
-The skill walks the test files git publishes in your repository, looks for five shapes of negative
-arm and returns how many benches have none.
+The skill walks the test suites git publishes in your repository, looks for five shapes of negative
+arm and returns how many test suites have none.
 
 That is all. No language model involved, no network, no dependencies, and it writes nowhere.
 
@@ -355,10 +376,10 @@ python skills/detector-control-negativo/verificar_control_negativo.py \
   --etiquetas ejemplo/etiquetas_ejemplo.yaml --listar
 ```
 
-**That «2 of 8» describes no real repository: the eight benches in `ejemplo/bancos/` are planted on
+**That "2 of 8" describes no real repository: the eight test suites in `ejemplo/bancos/` are planted on
 purpose, one by one, each with its label beside it.** Two with no negative arm, which are the two
 the report flags; five with one, one per signal; and one aggregator, for the label's third value.
-The ninth bench of that universe is the skill's own. It is a toy tree, built so every verdict can be
+The ninth test suite of that universe is the skill's own. It is a toy tree, built so every verdict can be
 checked by reading the file, and on your repository the split will be a different one.
 
 **That carries a practical consequence worth knowing before you clone.** Those fixtures are the
@@ -366,7 +387,7 @@ material the detector MEASURES, so several of them call symbols that do not exis
 would fail if anybody ran them as tests. They are named `test_*.py` because the detector's criterion
 is the filename, and renaming them would drop them out of their own measurement. The exclusion lives
 in `conftest.py` with the reason written inside, and today `python -m pytest -q` over this
-repository collects 38 tests, all 38 from the skill's own bench, and comes out green without
+repository collects 38 tests, all 38 from the skill's own test suite, and comes out green without
 touching a single fixture.
 
 The third way exists because the instrument does not need Claude Code. It is a standard library
@@ -382,9 +403,9 @@ python ~/.claude/skills/detector-control-negativo/verificar_control_negativo.py 
 
 **The first run on a new repository exits with `2`, and rightly so.** There are no labels yet, and
 without them the count is an unscored approximation. The path is `--etiquetar`, which prints the
-YAML template for the benches with no label, then opening those files by hand and writing the
-label with the line that proves it. That sitting is the work and there is no shortcut: measuring a
-bench means reading it.
+YAML template for the test suites with no label, then opening those files by hand and writing the
+label with the line that proves it. That time is the work and there is no shortcut: measuring a
+test suite means reading it.
 
 These are the five options, which is all of them:
 
@@ -393,15 +414,15 @@ These are the five options, which is all of them:
 | `--raiz PATH` | the tree to measure; by default, the git root of the current directory |
 | `--etiquetas FILE` | the reference truth the detector is scored against |
 | `--excluir SUBSTRING` | drops paths containing it; repeatable, and counted separately |
-| `--listar` | every bench with its verdict, and every verdict with the signal that fired |
-| `--etiquetar` | a YAML template for the benches that have no label yet |
+| `--listar` | every test suite with its verdict, and every verdict with the signal that fired |
+| `--etiquetar` | a YAML template for the test suites that have no label yet |
 
 Start with `--listar`.
 
 That view heads off the most expensive misunderstanding. The skill recognises the negative arm by
-shape, and your project's shapes need not resemble anyone else's: if your bench wraps its
+shape, and your project's shapes need not resemble anyone else's: if your test suite wraps its
 assertion in a helper of its own, or marks its negative cases by a different convention,
-`--listar` shows it at a glance. Every covered bench comes out with the signal that fired, so you
+`--listar` shows it at a glance. Every covered test suite comes out with the signal that fired, so you
 can see whether the criterion is recognising what you mean by a negative arm or counting something
 else.
 
@@ -409,7 +430,7 @@ else.
 
 ```yaml
 etiquetas:
-  - banco: tests/test_parser.py                # bench
+  - banco: tests/test_parser.py                # test file
     tiene_control_negativo: true               # has a negative control
     evidencia: "self.assertRaises(ValueError) in test_rechaza_cabecera_vacia"
     etiquetado_el: 2026-07-30                  # labelled on
@@ -425,7 +446,7 @@ accommodates the instrument and the measurement stops meaning anything. If the d
 with a label of yours, what gets fixed is the criterion.
 
 `tiene_control_negativo` takes a third value, `agregador`, which is not decoration: some files are
-named like a bench and hold no case of their own, because they discover other benches and launch
+named like a test suite and hold no case of their own, because they discover other test suites and launch
 them. Counting those among the uncovered counts the wrong object.
 
 ### Exit codes
@@ -435,29 +456,29 @@ them. Counting those among the uncovered counts the wrong object.
 | `0` | the detector agrees with every label |
 | `1` | it disagrees with one: there is a false positive or a false negative |
 | `2` | there are no labels to be scored against, so no score is invented |
-| `3` | no universe: no git root, or zero benches discovered |
+| `3` | no universe: no git root, or zero test suites discovered |
 
 **None of them talks about the state of your repository. That is deliberate.** The first
-attempt at measuring this returned 112 uncovered benches, then 77, then 48, then 31, and a manual
-review of three cases put the real figure at about ten. No version was miscoded: each refinement
+attempt at measuring this returned 112 uncovered test suites, then 77, then 48, then 31, and a manual
+review of three cases put the real figure at about ten. None of the versions was a coding bug: each refinement
 measured a different object. Acting on a figure that only falls as you look harder is the mistake
 this tool exists to avoid, so the count is reported and anyone wanting a blocking threshold sets
 it themselves, knowing what they are doing.
 
-The `3` is just as deliberate. Outside a git repository there is no universe, and saying «0
-benches without a negative control» there would be the textbook false green: the most reassuring
+The `3` is just as deliberate. Outside a git repository there is no universe, and saying "0
+test suites without a negative control" there would be the textbook false green: the most reassuring
 message available, produced by having looked at nothing.
 
 ### What it does not do
 
-- It does not write. Not to your benches, not to your configuration, not outside the folder it
+- It does not write. Not to your test suites, not to your configuration, not outside the folder it
   runs from. It proposes no patches and fixes nothing.
-- It does not say whether a bench is good. Having a negative assertion does not prove it
-  discriminates: a bench can carry `assertFalse` and still pass with broken code. Mutation says
+- It does not say whether a test suite is good. Having a negative assertion does not prove it
+  discriminates: a test suite can carry `assertFalse` and still pass with broken code. Mutation says
   that, and the package ships `mutar.py` to do it to itself.
 - It does not count what git does not publish. The universe comes from `git ls-files`, so a
-  bench in the working tree that nobody added stays out. A declared floor.
-- It does not take in a name that does not look like a bench. The criterion is `test_*.py`,
+  test suite in the working tree that nobody added stays out. A declared floor.
+- It does not take in a name that does not look like a test suite. The criterion is `test_*.py`,
   `run_tests*.py` or `*_test.py`. Another naming scheme needs another criterion.
 
 ### Uninstall
@@ -473,15 +494,15 @@ rm -rf ~/.claude/skills/detector-control-negativo
 
 The second command is the one almost nobody documents. Uninstalling the plugin drops it from the
 plugin list, but leaves the marketplace registered and its local copy in the cache Claude Code
-keeps at `~/.claude/plugins/cache`, which belongs to Claude Code and not to this skill.
+keeps under `~/.claude/plugins/`, which belongs to Claude Code and not to this skill.
 
 Of the skill itself nothing is left, because it writes nothing: no database, no state file, no
 configuration outside its own folder.
 
 ### Why trust it
 
-**38 cases, seven of them negative controls marked `CN`.** In a bench whose whole purpose is
-catching benches without negative controls, having none would be the most expensive irony in the
+**38 cases, seven of them negative controls marked `CN`.** In a test suite whose whole purpose is
+catching test suites without negative controls, having none would be the most expensive irony in the
 package.
 
 ```bash
@@ -490,26 +511,26 @@ python skills/detector-control-negativo/mutar.py
 ```
 
 The second command is what earns the right to boast about the first. It sabotages the detector on
-purpose, **six sabotages**, and counts how many the bench catches. Today it catches all six with
+purpose, **six sabotages**, and counts how many the test suite catches. Today it catches all six with
 no gaps. You do not have to take that on faith: you run it and watch. The measured file is
 restored when it finishes and also if the process is killed halfway, because the intact copy lives
 on disk and not in the program's memory.
 
-It was needed. Before publishing, four mutations were run against the detector and **two broke not
+It was necessary. Before publishing, four mutations were run against the detector and **two broke not
 one test**: deleting the `_CN_` literal from marker recognition and deleting the `_no_` and `_sin_`
-names from the name signal came out clean, because each depended exclusively on a single bench that
-was not labelled. A 24-case bench, green, and two lines of the criterion anyone could delete with
-nobody noticing. It was closed with two cases isolating each shape, taking the bench from 24 to 26.
+names from the name signal came out clean, because each depended exclusively on a single test suite that
+was not labelled. A 24-case test suite, green, and two lines of the criterion anyone could delete with
+nobody noticing. It was closed with two cases isolating each shape, taking the test suite from 24 to 26.
 The four more up to 30 were added by this packaging, and they cover what did not exist before or sat
-nailed inside the script: that the deliberately planted benches get caught, that no bench of the
+nailed inside the script: that the deliberately planted test suites get caught, that no test suite of the
 repository goes unlabelled, that the git root is not invented where there is none, and that the
 declared exclusion drops the paths and counts them separately. Two more, up to 32, came in while
 watching the fixture census and the mutator.
 
 **The last six, up to today's 38, were brought in by an outside audit on publication day**, with the
-bench at 32, mutation at 6 of 6 and label agreement at 9 of 9. It looked with material that was not
-in the bench and found two defects none of those three greens could see: the name signal matched on
-substrings, so the Spanish «protocolo» fired by containing «roto» (broken), and the label reader
+test suite at 32, mutation at 6 of 6 and label agreement at 9 of 9. It looked with material that was not
+in the test suite and found two defects none of those three greens could see: the name signal matched on
+substrings, so the Spanish "protocolo" fired by containing "roto" (broken), and the label reader
 turned any value it did not understand into `false`, its own unfilled template included. The lesson
 is written down because it is hard to see: mutation only guards lines that already exist, and
 agreement is measured against a toy tree without a single adversarial name or a single malformed
@@ -521,23 +542,29 @@ that passes without having bitten vouches for nothing.
 
 ### Requirements
 
-Python 3.9 or newer, standard library, no network and nothing to install. `git` must be on the
-PATH, because the bench universe is asked of it. On macOS and most Linux the interpreter is
+Python 3.9 or newer, standard library, no network and nothing to install. That "nothing to
+install" covers the instrument and its 38-case bank, which run under plain `python`. The only
+command on this page that needs anything external is the `pytest` that checks a fresh clone, and
+the CI installs it separately. `git` must be on the
+PATH, because the universe of test suites comes from it. On macOS and most Linux the interpreter is
 `python3`, not `python`: the commands on this page say `python` because they were written on
 Windows.
 
-That «no network» belongs to the skill. It needs tightening, because the repository does not meet the
+That "no network" belongs to the skill. It needs to be stricter, because the repository does not meet the
 same claim. `verificar_control_negativo.py` and `mutar.py` open no socket: what they need they
 ask of local `git`. The one that does go out is `guardian_gemelo.py`, at the repository root, which
 queries `api.github.com` to compare this package against its twin. It is not installed with the
 skill and it takes part in no measurement.
 
-That 3.9 is **declared and not yet certified**. Locally it has been run with Python 3.10, 3.13 and
-3.14, all three on Windows, and on nothing below 3.10, which is the version that mattered.
-A read-through found no syntax or library above 3.9, but that finds incompatibilities and
-does not certify compatibility. What certifies it is the CI matrix (3.9, 3.11 and 3.13 across
-Windows, Linux and macOS) going green, and until the first push it has not. When it does, this note
-gets corrected and not deleted.
+That 3.9 was **declared and uncertified** until 31/07/2026. This note gets corrected instead of
+deleted because that is what it promised. Locally it had only been run with Python 3.10, 3.13 and
+3.14, all three on Windows, and on nothing below 3.10, which was the version that mattered. A
+read-through found no syntax or library above 3.9, but that finds incompatibilities without
+certifying compatibility.
+
+What certifies it is the CI matrix, and the first push turned all of it green: **nine combinations,
+3.9, 3.11 and 3.13 across Windows, Linux and macOS**, plus the job that compares this repository
+with its twin. The 3.9 floor is now certified by execution.
 
 ### Sibling repositories
 
