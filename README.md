@@ -2,7 +2,7 @@
 
 **Tu suite de pruebas está verde. La pregunta que nadie hace es si esa suite sabría ponerse roja.
 Esta skill cuenta cuántos bancos de tu repositorio comprueban solo que lo bueno pasa, dice cuáles
-y por qué, y se puntúa a sí misma contra un conjunto etiquetado a mano antes de opinar de nada.**
+y por qué. Y se puntúa a sí misma contra un conjunto etiquetado a mano antes de opinar de nada.**
 
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
 ![sin dependencias](https://img.shields.io/badge/dependencias-ninguna-brightgreen)
@@ -56,24 +56,24 @@ BANCOS SIN CONTROL NEGATIVO
 ```
 
 Fíjate en las dos últimas líneas antes de fijarte en el recuento: **el código de salida habla del
-detector y no del repositorio.** Sale con `0` cuando concuerda con las etiquetas, y el número de
+detector y no del repositorio.** Sale con `0` cuando concuerda con las etiquetas. El número de
 bancos se reporta sin tumbar nada. Esa advertencia la imprime el propio programa, en cada ejecución,
-para que no dependa de que alguien se acuerde de escribirla. El porqué está más abajo, y es la
+para que no dependa de que alguien se acuerde de escribirla. El porqué está más abajo y es la
 decisión que da forma al resto.
 
 **Y el «2 de 8» no describe un repositorio de verdad: los ocho bancos de `ejemplo/bancos/` están
 plantados a propósito, uno a uno, con su etiqueta al lado.** Dos sin brazo negativo, que son los
 dos que el informe señala; cinco con brazo negativo, uno por cada señal; y un agregador, para el
 tercer valor de la etiqueta. El noveno banco del universo es el de la propia skill. Es un árbol de
-juguete, construido para que cada veredicto se pueda comprobar leyendo el fichero, y sobre tu
+juguete, construido para que cada veredicto se pueda comprobar leyendo el fichero. Sobre tu
 repositorio el reparto será otro.
 
 **Eso tiene una consecuencia práctica que conviene saber antes de clonar:** esas fixtures son el
 material que el detector MIDE, así que varias invocan símbolos que no existen a propósito y se
 caerían si alguien las ejecutara como pruebas. Se llaman `test_*.py` porque el criterio del detector
 es el nombre del fichero, y renombrarlas las sacaría de su propia medición. La exclusión vive en
-`conftest.py`, con el motivo escrito dentro, y hoy `python -m pytest -q` sobre este repositorio
-recoge 38 pruebas, las 38 del banco de la skill, y sale verde sin tocar una sola fixture.
+`conftest.py`, con el motivo escrito dentro. Hoy `python -m pytest -q` sobre este repositorio
+recoge las 38 pruebas del banco de la skill y sale verde sin tocar una sola fixture.
 
 Este repositorio es solo el paquete instalable. La medición sobre un árbol real, con las cifras,
 el método y las cuatro mutaciones que se le pasaron al propio detector, vive aparte:
@@ -87,10 +87,10 @@ el método y las cuatro mutaciones que se le pasaron al propio detector, vive ap
 
 ### Qué hace
 
-Cuenta bancos, y dice por qué cada uno.
+Cuenta bancos y dice por qué cada uno.
 
 A un banco que solo comprueba el camino bueno se le pasa una entrada correcta, se comprueba que
-sale el resultado correcto, y ahí acaba. Ese banco da verde, y sigue dando verde cuando alguien
+sale el resultado correcto y ahí acaba. Ese banco da verde y sigue dando verde cuando alguien
 rompe la validación de entrada, porque nunca se le pregunta qué hace con una entrada mala. Le
 falta el **control negativo**: el caso que afirma lo que la herramienta debe rechazar, bloquear,
 dejar vacío o marcar como inválido.
@@ -98,7 +98,7 @@ dejar vacío o marcar como inválido.
 La skill recorre los ficheros de test que git publica en tu repositorio, busca cinco formas de
 brazo negativo y devuelve cuántos bancos no tienen ninguna.
 
-Eso es todo. Sin modelo de lenguaje de por medio, sin red, sin dependencias, y sin escribir en
+Eso es todo. Sin modelo de lenguaje de por medio, sin red, sin dependencias y sin escribir en
 ningún sitio.
 
 ### Instalación
@@ -118,7 +118,7 @@ cp -r skill-detector-control-negativo/skills/detector-control-negativo ~/.claude
 python skills/detector-control-negativo/verificar_control_negativo.py --raiz .
 ```
 
-El ejemplo de `ejemplo/` se ejecuta sin que tengas que preparar nada, y es de donde sale el bloque
+El ejemplo de `ejemplo/` se ejecuta sin que tengas que preparar nada y es de donde sale el bloque
 de salida del principio de esta página:
 
 ```bash
@@ -138,9 +138,9 @@ python ~/.claude/skills/detector-control-negativo/verificar_control_negativo.py 
 ```
 
 **La primera ejecución en un repositorio nuevo sale con `2`, y está bien que lo haga.** Todavía no
-hay etiquetas, y sin ellas el recuento es una aproximación sin puntuar. El camino es
+hay etiquetas. Sin ellas el recuento es una aproximación sin puntuar. El camino es
 `--etiquetar`, que imprime la plantilla YAML de los bancos que aún no tienen etiqueta, abrir a
-mano los ficheros que salgan, y escribir la etiqueta con la línea que la demuestra. Ese rato es el
+mano los ficheros que salgan y escribir la etiqueta con la línea que la demuestra. Ese rato es el
 trabajo y no hay atajo: medir un banco obliga a leerlo.
 
 Estas son las cinco opciones, que son todas:
@@ -149,8 +149,8 @@ Estas son las cinco opciones, que son todas:
 |---|---|
 | `--raiz RUTA` | el árbol a medir; por defecto, la raíz git del directorio actual |
 | `--etiquetas FICHERO` | la verdad de referencia con la que se puntúa el detector |
-| `--excluir SUBCADENA` | deja fuera las rutas que la contengan; repetible, y se cuentan aparte |
-| `--listar` | cada banco con su veredicto, y cada veredicto con la señal que lo disparó |
+| `--excluir SUBCADENA` | deja fuera las rutas que la contengan; repetible y se cuentan aparte |
+| `--listar` | cada banco con su veredicto y cada veredicto con la señal que lo disparó |
 | `--etiquetar` | plantilla YAML de los bancos que aún no tienen etiqueta |
 
 La primera vez, `--listar`.
@@ -210,8 +210,8 @@ producido por no haber mirado nada.
 - No escribe. Ni en tus bancos, ni en tu configuración, ni fuera de la carpeta desde la que se
   ejecuta. No propone parches ni arregla nada.
 - No dice si un banco es bueno. Tener una aserción negativa no prueba que discrimine: un banco
-  puede llevar `assertFalse` y seguir pasando con el código roto. Eso lo dice mutar el código, y
-  el paquete trae `mutar.py` para hacérselo a sí mismo.
+  puede llevar `assertFalse` y seguir pasando con el código roto. Eso lo dice mutar el código.
+  El paquete trae `mutar.py` para hacérselo a sí mismo.
 - No cuenta lo que git no publica. El universo sale de `git ls-files`, así que un banco del
   árbol de trabajo que nadie ha añadido queda fuera. Es un suelo declarado.
 - No entra por un nombre que no parezca un banco. El criterio es `test_*.py`,
@@ -237,7 +237,7 @@ ni configuración fuera de su carpeta.
 
 ### Por qué fiarse
 
-**38 casos, y siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
+**38 casos. Siete de ellos son controles negativos marcados `CN`.** En un banco cuyo objeto es
 cazar bancos sin control negativo, no tenerlos sería la ironía más cara del paquete.
 
 ```bash
@@ -245,21 +245,21 @@ python skills/detector-control-negativo/test_detector_control_negativo.py
 python skills/detector-control-negativo/mutar.py
 ```
 
-El segundo comando es el que da derecho a presumir del primero. Sabotea el detector a propósito,
-**seis sabotajes**, y cuenta cuántos caza el banco. Hoy caza los seis sin un hueco. No hay que
+El segundo comando es el que da derecho a presumir del primero. Sabotea el detector a propósito
+con **seis sabotajes** y cuenta cuántos caza el banco. Hoy caza los seis sin un hueco. No hay que
 creérselo: se ejecuta y se ve. El fichero medido queda restaurado al terminar y también si el
 proceso muere a mitad, porque la copia intacta vive en disco y no en la memoria del programa.
 
 Eso hizo falta. Antes de publicar se le pasaron cuatro mutaciones al detector y **dos no rompieron
 ni un test**: borrar el literal `_CN_` del reconocimiento de la marca y borrar los nombres `_no_`
 y `_sin_` de la señal de nombre salían limpias, porque cada una dependía en exclusiva de un único
-banco que no estaba etiquetado. Un banco de 24 casos, verde, y dos líneas del criterio que
-cualquiera podía borrar sin que nadie se enterase. Se cerró con dos casos que aíslan cada forma, y
-el banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
+banco que no estaba etiquetado. Un banco de 24 casos, verde, con dos líneas del criterio que
+cualquiera podía borrar sin que nadie se enterase. Se cerró con dos casos que aíslan cada forma.
+El banco pasó de 24 a 26. Los cuatro que faltan hasta 30 los añadió este empaquetado y los dos
 últimos, hasta 32, entraron al vigilar el censo de fixtures y el mutador. Cubren lo
 que antes no existía o estaba clavado dentro del script: que los bancos plantados a propósito se
 cacen, que ningún banco del repositorio se quede sin etiqueta, que la raíz de git no se invente
-cuando no hay ninguna, y que la exclusión declarada saque las rutas y las cuente aparte.
+cuando no hay ninguna y que la exclusión declarada saque las rutas y las cuente aparte.
 
 **Los seis últimos, hasta los 38 de hoy, los trajo una auditoría externa el día de publicar**, con
 el banco en 32, la mutación en 6 de 6 y el acuerdo con las etiquetas en 9 de 9. Buscó con material
@@ -271,7 +271,7 @@ existen, y el acuerdo se mide contra un árbol de juguete sin un solo nombre adv
 etiqueta mal escrita. Un arnés hereda el punto ciego del corpus que lo alimenta.
 
 Y el mutador **falla cerrado**: si el ancla de un sabotaje ya no aparece en el fichero, esa
-mutación no se aplica, y en vez de contarla como cazada sale con ERROR y tumba la ejecución. Un
+mutación no se aplica y, en vez de contarla como cazada, sale con ERROR y tumba la ejecución. Un
 arnés que aprueba sin haber mordido no avala nada.
 
 ### Requisitos
@@ -281,14 +281,14 @@ el PATH, porque el universo de bancos se le pregunta a él. En macOS y en casi t
 intérprete se llama `python3`, no `python`: los comandos de esta página van con `python` porque se
 escribieron en Windows.
 
-Ese «sin red» es de la skill, y hay que apurarlo porque el repositorio no cumple lo mismo que ella.
+Ese «sin red» es de la skill. Hay que apurarlo porque el repositorio no cumple lo mismo que ella.
 `verificar_control_negativo.py` y `mutar.py` no abren un socket: lo que necesitan se lo preguntan a
 `git` en local. El que sí sale a la red es `guardian_gemelo.py`, en la raíz del repositorio, que
 consulta `api.github.com` para comparar este paquete con su gemelo. No se instala con la skill y no
 participa en ninguna medición.
 
 Ese 3.9 está **declarado y todavía no certificado**. En local se ha ejecutado con Python 3.10, 3.13
-y 3.14, las tres sobre Windows, y en ninguna versión por debajo de 3.10, que es la que importaba.
+y 3.14, las tres sobre Windows, pero en ninguna versión por debajo de 3.10, que es la que importaba.
 Un repaso del código no encontró sintaxis ni biblioteca por encima de 3.9, pero eso
 encuentra incompatibilidades y no certifica compatibilidad. Lo que la certifica es la matriz de CI
 (3.9, 3.11 y 3.13 sobre Windows, Linux y macOS) dando verde, y hasta el primer push no lo ha dado.
