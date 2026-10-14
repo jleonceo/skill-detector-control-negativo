@@ -121,11 +121,69 @@ _RE_NOMBRE_NEG = re.compile(
     r"def\s+\w*?(?:^|_)(?:no|sin|rechaz(?:a|ar|an|o)?|bloque(?:a|ar|an|o)?|invalid(?:[ao]s?)?|"
     r"fall(?:a|o|an|as|os)?|mal[ao]s?|rot[ao]s?|vaci[ao]s?)(?![a-zA-ZáéíóúñÁÉÍÓÚÑ])", re.I)
 
+# SEXTA SENAL, HAL-350 (15/08/2026). El brazo negativo escrito como SEGUNDA COLECCION.
+#
+# LA FORMA QUE SE LE ESCAPABA. Un banco con dos listas de modulo, una con lo que el detector
+# bajo prueba DEBE cazar y otra con lo que NO, mas un veredicto etiquetado por el sentido del
+# fallo. `run_tests_higiene_backup.py` es asi, y es control negativo de libro: no hay
+# `def test_no_*`, no hay assert, y la unica cadena con NO vive en un mensaje de fallo. Las
+# cinco senales anteriores devolvian lista VACIA, o sea acusacion.
+#
+# SE ANCLA POR LOS DOS LADOS, con la leccion del 31/07 delante. `NO_` exige el guion bajo, asi
+# que `NOMBRES`, `NOTAS` y `NOVEDADES` no disparan. Las demas palabras van con su terminacion
+# escrita, nunca entre `\w*`.
+#
+# SOLO CONSTANTES DE MODULO, en mayusculas y al principio de linea. Una variable local dentro
+# de una funcion no declara la estructura del banco, y aceptarla convertiria esta senal en la
+# que absuelve por casualidad.
+# HAL-359 (15/08/2026). Tres cosas cambian aqui, y las tres van hacia ACUSAR, que es la
+# direccion que le faltaba a una senal recien nacida.
+#
+#   (1) El ancla es la COLUMNA CERO, sin `\s*` delante. La cabecera de arriba promete
+#       constantes de MODULO, y con la sangria admitida una variable local dentro de una
+#       funcion declaraba la estructura del banco: ya disparaba sobre una del arbol real.
+#   (2) El valor tiene que ABRIR UNA COLECCION. `NO_PARAR = True` cumplia el ancla entera
+#       siendo un interruptor de configuracion, asi que un banco con una sola asercion
+#       positiva salia «con control negativo».
+#   (3) El nombre tiene que APARECER OTRA VEZ en el fichero. Una lista declarada que nadie
+#       recorre no prueba que exista el brazo negativo: prueba que alguien la escribio.
+#
+# EL PUNTO 3 ES MAS DURO QUE LO QUE PEDIA LA FICHA, que hablaba de contenido de coleccion O
+# uso en una asercion. Se subio a exigir las dos cosas por un motivo medido: el hallazgo que
+# dio origen a esta senal NO TIENE NI UN `assert`. Recorre sus dos listas en el cuerpo y
+# etiqueta el fallo por su sentido. Pedir asercion habria apagado justo el caso que la senal
+# existe para ver, asi que lo que se exige es USO, que es lo que aquel banco si hace.
+_RE_COLECCION_NEG = re.compile(
+    r"^(?P<n>NO_[A-Z][A-Z0-9_]*"
+    r"|NEGATIVOS?|CONTROLES?_NEG\w*|MALOS?|MALAS?|ROTOS?|ROTAS?"
+    r"|INVALIDOS?|INVALIDAS?|CONTRAEJEMPLOS?)\s*=(?P<v>.*)$",
+    re.M)
+
+# Lo que cuenta como abrir una coleccion. Los constructores van nombrados porque `dict(` no
+# empieza por corchete. LIMITE DECLARADO: una coleccion que venga de una funcion propia
+# (`NO_COPIAS = cargar_casos()`) NO se reconoce, asi que esta senal la deja pasar sin marcar.
+# Se prefiere no absolver a inventar que cualquier llamada devuelve una coleccion.
+_RE_ABRE_COLECCION = re.compile(r"^\s*(?:[\[\(\{]|(?:frozen)?set\(|list\(|tuple\(|dict\()")
+
+
+def _coleccion_neg_usada(texto):
+    """¿Hay una coleccion negativa de modulo, con contenido, que el banco use? (HAL-359)"""
+    for m in _RE_COLECCION_NEG.finditer(texto):
+        if not _RE_ABRE_COLECCION.match(m.group("v")):
+            continue
+        nombre = m.group("n")
+        # Se cuenta el nombre en el fichero entero. Una sola aparicion es su propia
+        # declaracion, o sea una lista muerta.
+        if len(re.findall(r"\b%s\b" % re.escape(nombre), texto)) > 1:
+            return True
+    return False
+
 # Donde vive una asercion. Se busca la senal de significado SOLO en estas lineas: un `== 0`
 # suelto dentro de la construccion del fixture no es un control negativo, es aritmetica.
 _RE_SITIO_ASERCION = re.compile(r"\bassert\b|\bcheck\(|\bself\.assert|\braises\(", re.I)
 
-_ORDEN = ("MARCA", "ASSERT_NEG", "ESPERA_CERO", "NOMBRE_NEG", "ETIQUETA_NEG")
+_ORDEN = ("MARCA", "ASSERT_NEG", "ESPERA_CERO", "NOMBRE_NEG", "ETIQUETA_NEG",
+          "COLECCION_NEG")
 
 # Un agregador no tiene casos propios: descubre otros bancos y los lanza. Contarlo como
 # «banco sin control negativo» es contar el objeto equivocado, y cinco de los veinticuatro
@@ -228,6 +286,8 @@ def senales_de(texto):
         encontradas.append("ESPERA_CERO")
     if _RE_NOMBRE_NEG.search(texto):
         encontradas.append("NOMBRE_NEG")
+    if _coleccion_neg_usada(texto):
+        encontradas.append("COLECCION_NEG")
     etiquetas = "\n".join(l for l in texto.splitlines() if _RE_SITIO_ETIQUETA.search(l))
     # HUECO CONOCIDO Y SIN CERRAR (31/07/2026). Estas dos formas se buscan sobre el fichero
     # ENTERO, asi que una constante del modulo vale como veredicto malo: un ataque adversarial

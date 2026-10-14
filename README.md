@@ -18,7 +18,7 @@ instalación manual de más abajo te vale igual.
 
 ![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue)
 ![sin dependencias](https://img.shields.io/badge/dependencias-ninguna-brightgreen)
-![38 casos](https://img.shields.io/badge/banco-38%20casos-brightgreen)
+![44 casos](https://img.shields.io/badge/banco-44%20casos-brightgreen)
 ![mutación 6/6](https://img.shields.io/badge/mutaci%C3%B3n-6%2F6-brightgreen)
 ![licencia MIT](https://img.shields.io/badge/licencia-MIT-lightgrey)
 [![ci](https://github.com/jleonceo/skill-detector-control-negativo/actions/workflows/ci.yml/badge.svg)](https://github.com/jleonceo/skill-detector-control-negativo/actions/workflows/ci.yml)
@@ -250,7 +250,7 @@ ni configuración fuera de su carpeta.
 
 ### Por qué fiarse
 
-**38 casos. Siete de ellos son controles negativos marcados `CN`.** En una suite cuya objeto es
+**44 casos. Siete de ellos son controles negativos marcados `CN`.** En una suite cuyo objeto es
 cazar suites sin control negativo, no tenerlos sería la ironía más cara del paquete.
 
 ```bash
@@ -290,7 +290,7 @@ arnés que aprueba sin haber mordido no avala nada.
 ### Requisitos
 
 Python 3.9 o superior, biblioteca estándar, sin red y sin nada que instalar. Ese «nada que
-instalar» cubre el instrumento y su batería de 38 casos, que se ejecutan con `python` a secas. El
+instalar» cubre el instrumento y su batería de 44 casos, que se ejecutan con `python` a secas. El
 único comando de esta página que pide algo de fuera es el `pytest` con el que se comprueba un clon
 recién hecho, y el propio CI lo instala aparte. Hace falta `git` en
 el PATH, porque el universo de suites se le pregunta a él. En macOS y en casi todo Linux el
@@ -504,7 +504,7 @@ configuration outside its own folder.
 
 ### Why trust it
 
-**38 cases, seven of them negative controls marked `CN`.** In a test suite whose whole purpose is
+**44 cases, seven of them negative controls marked `CN`.** In a test suite whose whole purpose is
 catching test suites without negative controls, having none would be the most expensive irony in the
 package.
 

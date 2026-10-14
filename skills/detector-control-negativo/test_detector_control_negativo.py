@@ -135,6 +135,73 @@ def test_escribe_el_fichero():
 '''
 
 
+# --- HAL-350 (15/08/2026) · el brazo negativo escrito como SEGUNDA COLECCION -------------
+# La forma de `run_tests_higiene_backup.py`, un banco real del proyecto que motivo el
+# hallazgo: dos listas, una con lo que debe cazar y otra con lo que NO, mas un veredicto
+# etiquetado por el SENTIDO del fallo. Las cinco senales anteriores no lo veian: no hay
+# `def test_no_*`, no hay assert, y la unica cadena con NO esta en un mensaje de fallo.
+# El banco quedaba acusado teniendo control negativo de libro.
+_CON_COLECCION_NEG = """
+COPIAS = ["backup_1.txt", "antes_de.txt"]
+NO_COPIAS = ["backup_diario.py", "informe.md"]
+
+def main():
+    fallos = []
+    for n in COPIAS:
+        if not es_backup(n):
+            fallos.append(("FALSO NEGATIVO (copia que se cuela)", n))
+    for n in NO_COPIAS:
+        if es_backup(n):
+            fallos.append(("FALSO POSITIVO (acusa a un fichero bueno)", n))
+    return 1 if fallos else 0
+"""
+
+# CONTROL NEGATIVO DE LA SENAL NUEVA. Una coleccion cuyo nombre EMPIEZA por algo parecido
+# pero no declara ningun brazo negativo. Sin este caso, anclar mal la palabra devolveria el
+# defecto de subcadena que una auditoria independiente encontro el 31/07.
+_SIN_COLECCION_NEG = """
+NOMBRES = ["uno", "dos"]
+NOTAS = ["tres"]
+NOVEDADES = ["cuatro"]
+
+def main():
+    for n in NOMBRES:
+        procesa(n)
+    return 0
+"""
+
+
+# HAL-359. La sonda de una auditoria independiente sobre un arbol de mentira. La constante
+# empieza por `NO_`, esta en mayusculas y al principio de linea, o sea que cumple el ancla
+# entera. No es una coleccion: es un interruptor de configuracion. Y el banco que la lleva
+# tiene una sola asercion positiva, o sea ningun control negativo en ninguna parte.
+_NO_ES_COLECCION_SINO_INTERRUPTOR = """
+NO_PARAR = True
+
+def test_algo():
+    assert suma(2, 2) == 4
+"""
+
+# La segunda mitad de HAL-359. La constante SI es una coleccion con contenido, pero nadie la
+# usa: ninguna asercion la menciona. Una lista declarada que no se ejercita no es un brazo
+# negativo, es una lista muerta.
+_COLECCION_QUE_NADIE_USA = """
+NO_COPIAS = ["backup_diario.py", "informe.md"]
+
+def test_algo():
+    assert suma(2, 2) == 4
+"""
+
+# El ancla acepta `^\\s*`, asi que una variable LOCAL indentada dentro de una funcion dispara
+# la senal, mientras la cabecera promete constantes de MODULO. Ya pasaba sobre un fichero del
+# arbol real (`NO_EXISTE` en `run_tests_auditar.py`).
+_LOCAL_INDENTADA_NO_DECLARA_ESTRUCTURA = """
+def test_algo():
+    NO_EXISTE = "/ruta/que/no/esta"
+    assert leer(NO_EXISTE) is None
+"""
+
+
 class Senales(unittest.TestCase):
     """CA2 · cada veredicto trae su motivo, y el motivo es el correcto."""
 
@@ -170,8 +237,40 @@ class Senales(unittest.TestCase):
         # La etiqueta del caso vive en una tabla de casos, no en la linea de la llamada.
         self.assertIn("ETIQUETA_NEG", det.senales_de(_CON_ETIQUETA_TABLA))
 
+    def test_ca2_coleccion_negativa_es_control_negativo(self):
+        # HAL-350. Dos listas y un veredicto por SENTIDO del fallo es control negativo, y
+        # ninguna de las cinco senales anteriores lo veia.
+        self.assertIn("COLECCION_NEG", det.senales_de(_CON_COLECCION_NEG))
+
+    def test_ca2_coleccion_parecida_no_dispara(self):
+        # El control de la senal nueva: `NOMBRES`, `NOTAS` y `NOVEDADES` empiezan por `NO`
+        # y no declaran ningun brazo negativo. Anclar por subcadena las daria por buenas.
+        self.assertNotIn("COLECCION_NEG", det.senales_de(_SIN_COLECCION_NEG))
+
     def test_ca2_afirmar_el_veredicto_malo(self):
         self.assertIn("ETIQUETA_NEG", det.senales_de(_CON_VEREDICTO_MALO))
+
+    def test_ca2_hal359_una_constante_que_no_es_coleccion_no_absuelve(self):
+        # `NO_PARAR = True` cumple el ancla entera sin ser una coleccion. La senal daba por
+        # bueno un banco con una sola asercion positiva.
+        self.assertNotIn("COLECCION_NEG",
+                         det.senales_de(_NO_ES_COLECCION_SINO_INTERRUPTOR))
+
+    def test_ca2_hal359_una_coleccion_que_nadie_usa_no_absuelve(self):
+        # Declarada y con contenido, pero ninguna asercion la toca. Una lista que no se
+        # ejercita no prueba que exista el brazo negativo.
+        self.assertNotIn("COLECCION_NEG", det.senales_de(_COLECCION_QUE_NADIE_USA))
+
+    def test_ca2_hal359_una_local_indentada_no_declara_la_estructura(self):
+        # La cabecera de la senal promete constantes de MODULO. El ancla aceptaba sangria.
+        self.assertNotIn("COLECCION_NEG",
+                         det.senales_de(_LOCAL_INDENTADA_NO_DECLARA_ESTRUCTURA))
+
+    def test_ca2_hal359_el_caso_legitimo_sigue_disparando(self):
+        # EL CONTROL QUE IMPIDE ARREGLAR DE MAS. `_CON_COLECCION_NEG` es el hallazgo que dio
+        # origen a la senal: dos listas de modulo, las dos recorridas por el cuerpo. Si el
+        # arreglo de HAL-359 lo apagara, habria cerrado la puerta tapiando la casa.
+        self.assertIn("COLECCION_NEG", det.senales_de(_CON_COLECCION_NEG))
 
 
 class ControlesNegativos(unittest.TestCase):
