@@ -1,5 +1,8 @@
 # skill-detector-control-negativo
 
+> Este repositorio es el paquete que se instala como plugin de Claude Code. El método y las cifras están en [detector-control-negativo](https://github.com/jleonceo/detector-control-negativo).  
+> *This repository is the package you install as a Claude Code plugin. The method and the figures are in [detector-control-negativo](https://github.com/jleonceo/detector-control-negativo).*
+
 **Tu suite de pruebas está verde. La pregunta que nadie hace es si esa suite sabría ponerse roja.
 Esta skill cuenta cuántas suites de tu repositorio comprueban solo que lo bueno pasa, dice cuáles
 y por qué. Y se puntúa a sí misma contra un conjunto etiquetado a mano antes de opinar de nada.**
