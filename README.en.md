@@ -18,8 +18,8 @@ Versión en español: [README.md](README.md)
 ## What it does
 
 ```mermaid
-flowchart TD
-    R[Test files that git publishes] --> S{Does it have any of the five<br/>forms of negative arm?}
+flowchart LR
+    R[Test files that<br/>git publishes] --> S{Does it have any of the five<br/>forms of negative arm?}
     S -->|Yes| OK[Suite with a negative control]
     S -->|No| SN[Suite without a negative control<br/>would pass with broken code]
     E[Label file<br/>written by hand before tuning] -.-> P[The criterion is scored<br/>false positives and false negatives]
