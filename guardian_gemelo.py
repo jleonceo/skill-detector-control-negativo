@@ -78,6 +78,7 @@ VIGILADOS = [
 ]
 PUEDEN_DIFERIR = {
     "README.md": "uno cuenta el metodo y el otro explica como se instala",
+    "README.en.md": "la version inglesa de esa portada, distinta por el mismo motivo",
     "guardian_gemelo.py": "cada copia nombra al OTRO repositorio en su constante GEMELO",
 }
 SOLO_EN_UNO = {
