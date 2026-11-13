@@ -17,6 +17,18 @@ Versión en español: [README.md](README.md)
 
 ## What it does
 
+```mermaid
+flowchart TD
+    R[Test files that git publishes] --> S{Does it have any of the five<br/>forms of negative arm?}
+    S -->|Yes| OK[Suite with a negative control]
+    S -->|No| SN[Suite without a negative control<br/>would pass with broken code]
+    E[Label file<br/>written by hand before tuning] -.-> P[The criterion is scored<br/>false positives and false negatives]
+    OK & SN -.-> P
+    style S fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style OK fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    style SN fill:#ffebee,stroke:#c62828,color:#b71c1c
+```
+
 It counts test suites, and says why for each one.
 
 A test suite that only checks the happy path is fed a valid input, asserts the correct result, and

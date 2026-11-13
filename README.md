@@ -96,6 +96,18 @@ el método y las cuatro mutaciones que se le pasaron al propio detector, vive ap
 
 ## Qué hace
 
+```mermaid
+flowchart TD
+    R[Ficheros de test que git publica] --> S{¿Tiene alguna de las cinco<br/>formas de brazo negativo?}
+    S -->|Sí| OK[Suite con control negativo]
+    S -->|No| SN[Suite sin control negativo<br/>daría verde con el código roto]
+    E[Fichero de etiquetas<br/>escrito a mano antes de afinar] -.-> P[Se puntúa el criterio<br/>falsos positivos y falsos negativos]
+    OK & SN -.-> P
+    style S fill:#e3f2fd,stroke:#1565c0,color:#0d47a1
+    style OK fill:#e8f5e9,stroke:#2e7d32,color:#1b5e20
+    style SN fill:#ffebee,stroke:#c62828,color:#b71c1c
+```
+
 Cuenta suites y dice por qué cada uno.
 
 A una suite que solo comprueba el camino bueno se le pasa una entrada correcta, se comprueba que
